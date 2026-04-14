@@ -31,8 +31,37 @@ Real-world recommenders like Spotify or YouTube build a picture of your taste by
 **UserProfile features:**
 - `favorite_genre` — the genre the user most prefers
 - `favorite_mood` — the mood the user most prefers
-- `target_energy` — the energy level the user wants
-- `likes_acoustic` — boolean flag for acoustic vs. produced sound preference
+- `target_energy` — the energy level the user wants, 0.0 to 1.0
+- `target_acousticness` — how acoustic the user wants the sound to be, 0.0 to 1.0
+- `target_valence` — the musical positivity the user wants, 0.0 to 1.0
+
+---
+
+### Algorithm Recipe
+
+Each song is scored on a scale from **0.0 to 6.0**. Higher is a better match.
+
+| Feature | Points | How it's calculated |
+|---|---|---|
+| Genre match | +2.0 | Exact match between `song.genre` and `user.favorite_genre` |
+| Mood match | +1.0 | Exact match between `song.mood` and `user.favorite_mood` |
+| Energy similarity | 0.0 – 1.0 | `1 - abs(song.energy - user.target_energy)` |
+| Acousticness similarity | 0.0 – 1.0 | `1 - abs(song.acousticness - user.target_acousticness)` |
+| Valence similarity | 0.0 – 1.0 | `1 - abs(song.valence - user.target_valence)` |
+
+The top `k` songs by score are returned as recommendations.
+
+**Why these weights?**
+Genre carries the most weight (2.0) because a genre mismatch is a hard preference violation — no amount of energy or acousticness tuning should push a metal song to the top of a lofi user's list. Mood gets half as much (1.0) because it is important but softer — a "chill" song can work for a user who asked for "focused." The three continuous features each cap at 1.0, so together they can match or beat genre weight, but no single audio nuance alone dominates the result.
+
+---
+
+### Expected Biases
+
+- **Genre-dominant results** — because genre is worth 2× mood and 2× any single continuous feature, two songs with the same genre will always outscore a perfect continuous-feature match from a different genre. Users who enjoy cross-genre listening may find results too narrow.
+- **Catalog coverage bias** — the 20-song catalog has uneven genre distribution (e.g. multiple lofi tracks, only one classical). Genres with more catalog entries have a higher chance of appearing in top results, not because they fit better, but because there are more candidates.
+- **Exact-match brittleness** — genre and mood use exact string matching. A song tagged `"indie pop"` will score 0 for a user whose `favorite_genre` is `"pop"`, even though the fit is close. Real-world systems use embeddings or genre hierarchies to avoid this cliff.
+- **No behavioral signal** — the profile is a fixed snapshot. It cannot learn that this particular user skips acoustic songs despite high `target_acousticness`, or that they always replay tracks with high valence. Every session starts from the same static weights.
 
 ---
 
