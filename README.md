@@ -100,6 +100,59 @@ You can add more tests in `tests/test_recommender.py`.
 
 ---
 
+## Adversarial / Edge-Case Profile Results
+
+These profiles are designed to stress-test the scoring logic by exposing situations where it may produce unexpected or misleading results.
+
+### 1. High-Energy Sad
+A user who wants intense energy but very low valence (sad). High-energy songs tend to have high valence, so the two targets fight each other.
+
+![High-Energy Sad](screenshots/adv_profile_1.png)
+
+---
+
+### 2. Ghost Genre
+A genre (`bossa nova`) that does not exist in the catalog. No song ever earns the +2.0 genre bonus, so rankings collapse to a 4-point range driven only by mood and continuous features.
+
+![Ghost Genre](screenshots/adv_profile_2.png)
+
+---
+
+### 3. Dead Zone
+All continuous targets set to 0.0. The similarity formula rewards songs with near-zero energy, acousticness, and valence — penalising most real songs equally.
+
+![Dead Zone](screenshots/adv_profile_3.png)
+
+---
+
+### 4. Max Everything
+All continuous targets at 1.0, including both high energy and high acousticness — a physically contradictory combination the scorer cannot detect.
+
+![Max Everything](screenshots/adv_profile_4.png)
+
+---
+
+### 5. Happy Metal
+The catalog only has `metal/angry`, not `metal/happy`. The +2.0 genre bonus pulls the angry metal song to #1 even though the mood is completely wrong.
+
+![Happy Metal](screenshots/adv_profile_5.png)
+
+---
+
+### 6. Midpoint Flatline
+All continuous targets at 0.5, making every song equally mediocre on numeric features. The flat +2/+1 bonuses become the only signal.
+
+![Midpoint Flatline](screenshots/adv_profile_6.png)
+
+---
+
+### 7. Out-of-Range Energy
+`target_energy` set to 1.3 (outside the valid 0–1 range). No error is raised — scores are silently wrong for every song.
+
+![Out-of-Range Energy](screenshots/adv_profile_7.png)
+
+---
+
 ## Experiments You Tried
 
 Use this section to document the experiments you ran. For example:
