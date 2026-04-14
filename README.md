@@ -17,17 +17,22 @@ Replace this paragraph with your own summary of what your version does.
 
 ## How The System Works
 
-Explain your design in plain language.
+Real-world recommenders like Spotify or YouTube build a picture of your taste by tracking listening behavior — skips, replays, saves — and combining that with content features like genre, tempo, and mood. Many also use collaborative filtering, recommending songs that people with similar habits have enjoyed. My version skips the behavioral layer entirely and works from explicit preferences: it compares a user's stated taste profile directly against each song's attributes and scores how well they match. The priority is transparency. Every recommendation can be traced back to a clear, readable rule rather than a black-box model.
 
-Some prompts to answer:
+**Song features:**
+- `genre` — musical category (e.g. pop, hip-hop, jazz)
+- `mood` — emotional tone (e.g. happy, melancholic, energetic)
+- `energy` — intensity level, 0.0 to 1.0
+- `tempo_bpm` — beats per minute
+- `valence` — musical positivity, 0.0 to 1.0
+- `danceability` — how suitable it is for dancing, 0.0 to 1.0
+- `acousticness` — how acoustic vs. electronic, 0.0 to 1.0
 
-- What features does each `Song` use in your system
-  - For example: genre, mood, energy, tempo
-- What information does your `UserProfile` store
-- How does your `Recommender` compute a score for each song
-- How do you choose which songs to recommend
-
-You can include a simple diagram or bullet list if helpful.
+**UserProfile features:**
+- `favorite_genre` — the genre the user most prefers
+- `favorite_mood` — the mood the user most prefers
+- `target_energy` — the energy level the user wants
+- `likes_acoustic` — boolean flag for acoustic vs. produced sound preference
 
 ---
 
