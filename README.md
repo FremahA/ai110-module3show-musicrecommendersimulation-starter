@@ -87,7 +87,7 @@ python -m src.main
 
 ### Sample Output
 
-![Terminal output showing top recommendations](screenshots/output.png)
+![Terminal output showing top recommendations](screenshots/new_output.png)
 
 ---
 
@@ -111,7 +111,7 @@ These profiles are designed to stress-test the scoring logic by exposing situati
 
 A user who wants intense energy but very low valence (sad). High-energy songs tend to have high valence, so the two targets fight each other.
 
-![High-Energy Sad](screenshots/adv_profile_1.png)
+![High-Energy Sad](screenshots/adv_1.png)
 
 ---
 
@@ -119,7 +119,7 @@ A user who wants intense energy but very low valence (sad). High-energy songs te
 
 A genre (`bossa nova`) that does not exist in the catalog. No song ever earns the +2.0 genre bonus, so rankings collapse to a 4-point range driven only by mood and continuous features.
 
-![Ghost Genre](screenshots/adv_profile_2.png)
+![Ghost Genre](screenshots/adv_2.png)
 
 ---
 
@@ -127,7 +127,7 @@ A genre (`bossa nova`) that does not exist in the catalog. No song ever earns th
 
 All continuous targets set to 0.0. The similarity formula rewards songs with near-zero energy, acousticness, and valence (penalising most real songs equally).
 
-![Dead Zone](screenshots/adv_profile_3.png)
+![Dead Zone](screenshots/adv_3.png)
 
 ---
 
@@ -135,7 +135,7 @@ All continuous targets set to 0.0. The similarity formula rewards songs with nea
 
 All continuous targets at 1.0, including both high energy and high acousticness (a physically contradictory combination the scorer cannot detect).
 
-![Max Everything](screenshots/adv_profile_4.png)
+![Max Everything](screenshots/adv_4.png)
 
 ---
 
@@ -143,7 +143,7 @@ All continuous targets at 1.0, including both high energy and high acousticness 
 
 The catalog only has `metal/angry`, not `metal/happy`. The +2.0 genre bonus pulls the angry metal song to #1 even though the mood is completely wrong.
 
-![Happy Metal](screenshots/adv_profile_5.png)
+![Happy Metal](screenshots/adv_5.png)
 
 ---
 
@@ -151,7 +151,7 @@ The catalog only has `metal/angry`, not `metal/happy`. The +2.0 genre bonus pull
 
 All continuous targets at 0.5, making every song equally mediocre on numeric features. The flat +2/+1 bonuses become the only signal.
 
-![Midpoint Flatline](screenshots/adv_profile_6.png)
+![Midpoint Flatline](screenshots/adv_6.png)
 
 ---
 
@@ -159,7 +159,7 @@ All continuous targets at 0.5, making every song equally mediocre on numeric fea
 
 `target_energy` set to 1.3 (outside the valid 0–1 range). No error is raised — scores are silently wrong for every song.
 
-![Out-of-Range Energy](screenshots/adv_profile_7.png)
+![Out-of-Range Energy](screenshots/adv_7.png)
 
 ---
 

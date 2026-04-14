@@ -9,6 +9,7 @@ You will implement the functions in recommender.py:
 - recommend_songs
 """
 
+from tabulate import tabulate
 from recommender import load_songs, recommend_songs
 
 
@@ -120,22 +121,31 @@ ADVERSARIAL_PROFILES = {
 
 
 def print_recommendations(profile_name: str, user_prefs: dict, songs: list, label: str = "Profile") -> None:
-    """Print top 5 recommendations for a single profile."""
+    """Print top 5 recommendations as a formatted table with score reasons."""
     recommendations = recommend_songs(user_prefs, songs, k=5)
 
-    print("\n" + "=" * 40)
+    print("\n" + "=" * 72)
     print(f"  {label}: {profile_name}")
-    print("=" * 40)
+    print("=" * 72)
 
+    rows = []
     for i, (song, score, explanation) in enumerate(recommendations, start=1):
-        print(f"\n#{i}  {song['title']}  —  {song['artist']}")
-        print(f"    Score : {score:.2f} / 6.0")
-        print(f"    Genre : {song['genre']}   Mood: {song['mood']}")
-        print("    Why   :")
-        for reason in explanation.split("; "):
-            print(f"      • {reason}")
+        reasons = "\n".join(f"• {r}" for r in explanation.split("; "))
+        rows.append([
+            f"#{i}",
+            f"{song['title']}\n{song['artist']}",
+            f"{song['genre']}\n{song['mood']}",
+            f"{score:.2f}/6.0",
+            reasons,
+        ])
 
-    print("\n" + "=" * 40)
+    print(tabulate(
+        rows,
+        headers=["Rank", "Title / Artist", "Genre / Mood", "Score", "Why"],
+        tablefmt="simple_grid",
+        maxcolwidths=[4, 22, 14, 8, 32],
+    ))
+    print()
 
 
 def main() -> None:
