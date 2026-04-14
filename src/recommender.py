@@ -52,9 +52,9 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     Score a single song against a user profile dict.
 
     Algorithm Recipe (max 6.0 points):
-      +2.0  genre match        — exact string match
+      +1.0  genre match        — exact string match (EXPERIMENT: halved from 2.0)
       +1.0  mood match         — exact string match
-      0–1.0 energy similarity  — 1 - |song.energy - target_energy|
+      0–2.0 energy similarity  — 2 * (1 - |song.energy - target_energy|) (EXPERIMENT: doubled from 0–1.0)
       0–1.0 acousticness sim.  — 1 - |song.acousticness - target_acousticness|
       0–1.0 valence similarity — 1 - |song.valence - target_valence|
 
@@ -65,16 +65,16 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     reasons = []
 
     if song["genre"] == user_prefs["favorite_genre"]:
-        score += 2.0
-        reasons.append("genre match (+2.0)")
+        score += 1.0  # EXPERIMENT: halved from 2.0
+        reasons.append("genre match (+1.0)")
 
     if song["mood"] == user_prefs["favorite_mood"]:
         score += 1.0
         reasons.append("mood match (+1.0)")
 
-    energy_sim = 1.0 - abs(song["energy"] - user_prefs["target_energy"])
+    energy_sim = 2.0 * (1.0 - abs(song["energy"] - user_prefs["target_energy"]))  # EXPERIMENT: doubled weight
     score += energy_sim
-    reasons.append(f"energy similarity ({energy_sim:.2f}/1.0)")
+    reasons.append(f"energy similarity ({energy_sim:.2f}/2.0)")
 
     acousticness_sim = 1.0 - abs(song["acousticness"] - user_prefs["target_acousticness"])
     score += acousticness_sim
