@@ -56,11 +56,20 @@ def load_songs(csv_path: str) -> List[Dict]:
     with open(csv_path, newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
+            # integers
+            row["id"] = int(row["id"])
+            row["popularity"] = int(row["popularity"])
+            row["explicit"] = int(row["explicit"])
+            # floats
             row["energy"] = float(row["energy"])
             row["tempo_bpm"] = float(row["tempo_bpm"])
             row["valence"] = float(row["valence"])
             row["danceability"] = float(row["danceability"])
             row["acousticness"] = float(row["acousticness"])
+            row["instrumentalness"] = float(row["instrumentalness"])
+            row["speechiness"] = float(row["speechiness"])
+            row["liveness"] = float(row["liveness"])
+            row["loudness_db"] = float(row["loudness_db"])
             songs.append(row)
     return songs
 
