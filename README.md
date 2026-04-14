@@ -180,15 +180,13 @@ After the weight shift, the top result changed in 4 of 7 adversarial profiles bu
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
-
-Examples:
-
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
-
-You will go deeper on this in your model card.
+- The catalog only has 20 songs. Rare genres like classical and folk have just one song each, so those users always get off-genre results in their top 5.
+- Genre and mood use exact string matching. A song tagged "indie pop" scores zero for a user who likes "pop," even though the fit is close.
+- The system always returns 5 results no matter what. There is no minimum score threshold, so it looks confident even when no good match exists.
+- The energy gap is treated symmetrically — being too loud and being too quiet get the same penalty, which is not how most listeners actually feel.
+- The profile never updates. If a user skips every high-energy song, the system will keep recommending them anyway.
+- Out-of-range inputs like `target_energy: 1.3` produce no error — the scores are silently wrong.
+- The dataset skews toward Western genres. K-pop, Afrobeats, reggae, and other global styles are not represented at all.
 
 ---
 
