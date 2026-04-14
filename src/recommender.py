@@ -47,6 +47,46 @@ class Recommender:
         # TODO: Implement explanation logic
         return "Explanation placeholder"
 
+def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
+    """
+    Score a single song against a user profile dict.
+
+    Algorithm Recipe (max 6.0 points):
+      +2.0  genre match        — exact string match
+      +1.0  mood match         — exact string match
+      0–1.0 energy similarity  — 1 - |song.energy - target_energy|
+      0–1.0 acousticness sim.  — 1 - |song.acousticness - target_acousticness|
+      0–1.0 valence similarity — 1 - |song.valence - target_valence|
+
+    Returns (score, explanation) where explanation is a human-readable
+    summary of which features contributed.
+    """
+    score = 0.0
+    reasons = []
+
+    if song["genre"] == user_prefs["favorite_genre"]:
+        score += 2.0
+        reasons.append("genre match (+2.0)")
+
+    if song["mood"] == user_prefs["favorite_mood"]:
+        score += 1.0
+        reasons.append("mood match (+1.0)")
+
+    energy_sim = 1.0 - abs(song["energy"] - user_prefs["target_energy"])
+    score += energy_sim
+    reasons.append(f"energy similarity ({energy_sim:.2f}/1.0)")
+
+    acousticness_sim = 1.0 - abs(song["acousticness"] - user_prefs["target_acousticness"])
+    score += acousticness_sim
+    reasons.append(f"acousticness similarity ({acousticness_sim:.2f}/1.0)")
+
+    valence_sim = 1.0 - abs(song["valence"] - user_prefs["target_valence"])
+    score += valence_sim
+    reasons.append(f"valence similarity ({valence_sim:.2f}/1.0)")
+
+    return score, reasons
+
+
 def load_songs(csv_path: str) -> List[Dict]:
     """
     Loads songs from a CSV file.
